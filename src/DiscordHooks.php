@@ -557,4 +557,175 @@ class DiscordHooks {
 			DiscordUtils::handleDiscord($hookName, $msg);
 		return true;
 	}
+
+	/**
+	 * Called when a wall message is created
+	 * @see https://www.fandom.com/wiki/Message_Wall
+	 */
+	public static function onMessageWallAction( $action, $article, $user, $data ) {
+		global $wgDiscordNoBots;
+		$hookName = 'MessageWallAction';
+
+		if ( DiscordUtils::isDisabled( $hookName, NS_USER_WALL, $user ) ) {
+			return true;
+		}
+
+		if ( $wgDiscordNoBots && $user->isBot() ) {
+			return true;
+		}
+		
+		// Only process certain actions
+		if ($action === 'create') {
+			$wallOwner = Title::newFromText($article->getTitle()->getText())->getText();
+			if (strpos($wallOwner, 'Message_Wall:') === 0) {
+				$wallOwner = substr($wallOwner, 13); // Remove "Message_Wall:" prefix
+				$wallOwner = str_replace('_', ' ', $wallOwner);
+			}
+			
+			$msg = wfMessage( 'discord-wall-message-created', 
+				DiscordUtils::createUserLinks( $user ),
+				DiscordUtils::createMarkdownLink( $data['title'] ?? 'New message', $article->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+				$wallOwner,
+				( $data['text'] ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $data['text'] ) ) . '`' ) : '' )
+			)->inContentLanguage()->plain();
+			
+			DiscordUtils::handleDiscord($hookName, $msg);
+		} elseif ($action === 'reply') {
+			$msg = wfMessage( 'discord-wall-message-reply', 
+				DiscordUtils::createUserLinks( $user ),
+				DiscordUtils::createMarkdownLink( $article->getTitle(), $article->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+				( $data['text'] ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $data['text'] ) ) . '`' ) : '' )
+			)->inContentLanguage()->plain();
+			
+			DiscordUtils::handleDiscord($hookName, $msg);
+		} elseif ($action === 'remove') {
+			$msg = wfMessage( 'discord-wall-message-deleted', 
+				DiscordUtils::createUserLinks( $user ),
+				DiscordUtils::createMarkdownLink( $article->getTitle(), $article->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) )
+			)->inContentLanguage()->plain();
+			
+			DiscordUtils::handleDiscord($hookName, $msg);
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Called when an article comment is added
+	 * @see https://www.fandom.com/wiki/ArticleComments
+	 */
+	public static function onArticleCommentAddComplete( $comment, $user, $text, $articleId ) {
+		global $wgDiscordNoBots;
+		$hookName = 'ArticleCommentAdd';
+
+		if ( DiscordUtils::isDisabled( $hookName, NS_MAIN, $user ) ) {
+			return true;
+		}
+
+		if ( $wgDiscordNoBots && $user->isBot() ) {
+			return true;
+		}
+		
+		$article = Article::newFromID($articleId);
+		if (!$article) {
+			return true;
+		}
+		
+		$msg = wfMessage( 'discord-article-comment-added',
+			DiscordUtils::createUserLinks( $user ),
+			DiscordUtils::createMarkdownLink( $article->getTitle(), $article->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+			( $text ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $text ) ) . '`' ) : '' )
+		)->inContentLanguage()->plain();
+		
+		DiscordUtils::handleDiscord($hookName, $msg);
+		return true;
+	}
+
+	/**
+	 * Called when an article comment reply is added
+	 */
+	public static function onArticleCommentReplyAddComplete( $reply, $user, $text, $parentCommentId ) {
+		global $wgDiscordNoBots;
+		$hookName = 'ArticleCommentReplyAdd';
+
+		if ( DiscordUtils::isDisabled( $hookName, NS_MAIN, $user ) ) {
+			return true;
+		}
+
+		if ( $wgDiscordNoBots && $user->isBot() ) {
+			return true;
+		}
+		
+		// Get parent comment and article
+		$parentComment = ArticleComment::newFromID($parentCommentId);
+		if (!$parentComment) {
+			return true;
+		}
+		
+		$articleId = $parentComment->getArticleID();
+		$article = Article::newFromID($articleId);
+		if (!$article) {
+			return true;
+		}
+		
+		$msg = wfMessage( 'discord-article-comment-reply-added',
+			DiscordUtils::createUserLinks( $user ),
+			DiscordUtils::createMarkdownLink( $article->getTitle(), $article->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+			( $text ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $text ) ) . '`' ) : '' )
+		)->inContentLanguage()->plain();
+		
+		DiscordUtils::handleDiscord($hookName, $msg);
+		return true;
+	}
+
+	/**
+	 * Called when a forum thread is created
+	 * @see https://www.fandom.com/wiki/Forum
+	 */
+	public static function onForumThreadCreate( $thread, $user, $text ) {
+		global $wgDiscordNoBots;
+		$hookName = 'ForumThreadCreate';
+
+		if ( DiscordUtils::isDisabled( $hookName, NS_FORUM, $user ) ) {
+			return true;
+		}
+
+		if ( $wgDiscordNoBots && $user->isBot() ) {
+			return true;
+		}
+		
+		$msg = wfMessage( 'discord-forum-thread-created',
+			DiscordUtils::createUserLinks( $user ),
+			DiscordUtils::createMarkdownLink( $thread->getTitle(), $thread->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+			( $text ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $text ) ) . '`' ) : '' )
+		)->inContentLanguage()->plain();
+		
+		DiscordUtils::handleDiscord($hookName, $msg);
+		return true;
+	}
+
+	/**
+	 * Called when a reply is posted to a forum thread
+	 */
+	public static function onForumThreadReplyCreate( $reply, $user, $text, $thread ) {
+		global $wgDiscordNoBots;
+		$hookName = 'ForumThreadReplyCreate';
+
+		if ( DiscordUtils::isDisabled( $hookName, NS_FORUM, $user ) ) {
+			return true;
+		}
+
+		if ( $wgDiscordNoBots && $user->isBot() ) {
+			return true;
+		}
+		
+		$msg = wfMessage( 'discord-forum-reply-created',
+			DiscordUtils::createUserLinks( $user ),
+			DiscordUtils::createMarkdownLink( $thread->getTitle(), $thread->getTitle()->getFullURL( '', false, PROTO_CANONICAL ) ),
+			( $text ? ('`' . DiscordUtils::sanitiseText( DiscordUtils::truncateText( $text ) ) . '`' ) : '' )
+		)->inContentLanguage()->plain();
+		
+		DiscordUtils::handleDiscord($hookName, $msg);
+		return true;
+	}
 }

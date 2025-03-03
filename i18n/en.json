@@ -36,5 +36,12 @@
 	"discord-approvedrevsrevisionunapproved": "$1 unapproved the approved revision for $2",
 	"discord-approvedrevsfilerevisionapproved": "$1 approved a new file revision of $2 ($3) from user $4",
 	"discord-approvedrevsfilerevisionunapproved": "$1 unapproved the approved file revision for $2",
-	"discord-renameusercomplete": "$1 renamed the user $2 to $3"
+	"discord-renameusercomplete": "$1 renamed the user $2 to $3",
+	"discord-wall-message-created": "$1 posted a message \"$2\" on $3's wall: $4",
+	"discord-wall-message-reply": "$1 replied to a message $2: $3",
+	"discord-wall-message-deleted": "$1 deleted a message $2",
+	"discord-article-comment-added": "$1 commented on $2: $3",
+	"discord-article-comment-reply-added": "$1 replied to a comment on $2: $3",
+	"discord-forum-thread-created": "$1 created forum thread $2: $3",
+	"discord-forum-reply-created": "$1 replied to forum thread $2: $3"
 }

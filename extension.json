@@ -48,7 +48,32 @@
 			"ApprovedRevsRevisionUnapproved": ":white_check_mark:",
 			"ApprovedRevsFileRevisionApproved": ":white_check_mark:",
 			"ApprovedRevsFileRevisionUnapproved": ":white_check_mark:",
-			"RenameUserComplete": ":people_holding_hands:"
+			"RenameUserComplete": ":people_holding_hands:",
+			"MessageWallAction": ":speech_balloon:",
+			"ArticleCommentAddComplete": ":thought_balloon:",
+			"ArticleCommentReplyAddComplete": ":left_speech_bubble:",
+			"ForumThreadCreate": ":memo:",
+			"ForumThreadReplyCreate": ":leftwards_arrow_with_hook:"
+		},
+		"DiscordEnableSocialMonitoring": true,
+		"DiscordSocialDisabledTypes": [],
+		"DiscordSocialNamespaces": [
+			500,
+			501,
+			1200,
+			1201,
+			1202,
+			2000,
+			2001,
+			2002
+		],
+		"DiscordSocialMessageFormat": {
+			"message": "$1 posted on $2's wall: $3",
+			"message-reply": "$1 replied to a message on $2's wall: $3",
+			"thread": "$1 created forum thread $2: $3",
+			"reply": "$1 replied to forum thread $2: $3",
+			"comment": "$1 commented on article $2: $3",
+			"comment-reply": "$1 replied to a comment on article $2: $3"
 		}
 	},
 	"AutoloadClasses": {
@@ -78,6 +103,11 @@
 		"ApprovedRevsRevisionUnapproved": "DiscordHooks::onApprovedRevsRevisionUnapproved",
 		"ApprovedRevsFileRevisionApproved": "DiscordHooks::onApprovedRevsFileRevisionApproved",
 		"ApprovedRevsFileRevisionUnapproved": "DiscordHooks::onApprovedRevsFileRevisionUnapproved",
-		"RenameUserComplete": "DiscordHooks::onRenameUserComplete"
+		"RenameUserComplete": "DiscordHooks::onRenameUserComplete",
+		"MessageWallAction": "DiscordHooks::onMessageWallAction",
+		"ArticleCommentAddComplete": "DiscordHooks::onArticleCommentAddComplete",
+		"ArticleCommentReplyAddComplete": "DiscordHooks::onArticleCommentReplyAddComplete",
+		"ForumThreadCreate": "DiscordHooks::onForumThreadCreate",
+		"ForumThreadReplyCreate": "DiscordHooks::onForumThreadReplyCreate"
 	}
 }
