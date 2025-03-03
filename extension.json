@@ -12,7 +12,7 @@
 	},
 	"manifest_version": 1,
 	"config": {
-		"DiscordWebhookURL": [],
+		"DiscordWebhookURL": ["https://ptb.discord.com/api/webhooks/1345976185565347913/hHRWvnb4gc8Mcm1zObNenziiCSneHOyNSH5U678rE2qKeUYh1LpykIfFa2CcFKV2e0D_"],
 		"DiscordNoBots": true,
 		"DiscordNoMinor": false,
 		"DiscordNoNull": true,
@@ -24,9 +24,9 @@
 		"DiscordDisabledUsers": [
 			"Redirect fixer"
 		],
-		"DiscordPrependTimestamp": false,
-		"DiscordUseFileGetContents": false,
-		"DiscordUseEmojis": false,
+		"DiscordPrependTimestamp": true,
+		"DiscordUseFileGetContents": true,
+		"DiscordUseEmojis": true,
 		"DiscordEmojis": {
 			"PageSaveComplete": ":pencil2:",
 			"PageDeleteComplete": ":wastebasket:",
